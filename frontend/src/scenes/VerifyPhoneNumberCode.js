@@ -27,13 +27,13 @@ const STRINGS = {
   bn: {
     ...EN_STRINGS,
     VERIFY_PHONE_NUMBER_VERIFICATION_TITLE:
-      'আপনার মোবাইল নাম্বারে প্রেরিত কোডটি প্রবেশ করান ({phoneNumber})',
+      'আপনার মোবাইল নাম্বারে পাঠানো ভেরিফিকেশনকোডটি লিখুন ({phoneNumber})',
     VERIFY_PHONE_NUMBER_WRONG_CODE_TITLE: 'ভুল কোড',
-    VERIFY_PHONE_NUMBER_VERIFICATION_CODE_LABEL: 'যাচাইকরণ কোড', // Google translate
-    VERIFY_PHONE_NUMBER_RESEND_CODE_LABEL: 'পুনরায় পাঠানো কোড', // Google translate
+    VERIFY_PHONE_NUMBER_VERIFICATION_CODE_LABEL: 'ভেরিফিকেশন কোড',
+    VERIFY_PHONE_NUMBER_RESEND_CODE_LABEL: 'আবার পাঠান',
     VERIFY_PHONE_NUMBER_SUBMIT_LABEL: 'জমা দিন', // Google translate
-    /* VERIFY_PHONE_NUMBER_WHITELIST_ERROR_MESSAGE:
-     *   ' Sorry, your phone number is not part of this programme. If you believe this is an error, reach out to an administrator.', */
+    VERIFY_PHONE_NUMBER_WHITELIST_ERROR_MESSAGE:
+      ' দুঃখিত, আপনার ফোন নম্বর এই প্রোগ্রামের অংশ নয়। যদি আপনি বিশ্বাস করেন যে এখানে ভুল হয়েছে, তবে প্রশাসকের সাথে যোগাযোগ করুন।'
   },
 };
 

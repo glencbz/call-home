@@ -31,9 +31,9 @@ const STRINGS = {
   en: EN_STRINGS,
   bn: {
     ...EN_STRINGS,
-    CALLING_CONNECTING: 'সংযোজক',
-    CALLING_CONNECTED: 'সংযুক্ত', // TODO Google translate
-    CALLING_CALL_FAILED: 'কল ব্যর্থ হয়েছে',
+    CALLING_CONNECTING: 'কল যাচ্ছে... ',
+    CALLING_CONNECTED: 'কল সংযুক্ত!',
+    CALLING_CALL_FAILED: 'সংযোগ হচ্ছে না',
   },
 };
 

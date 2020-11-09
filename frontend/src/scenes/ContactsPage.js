@@ -94,22 +94,21 @@ const STRINGS = {
   bn: {
     ...EN_STRINGS,
     CONTACTS_TITLE: 'আপনার প্রিয়জন',
-    CONTACTS_SUBTITLE: 'আপনার প্রিয়জনকে বিনামূল্যে বাড়ি ফিরে কল করুন',
-    CONTACTS_ADD_CONTACT_LABEL: 'প্রিয়জনকে যুক্ত করুন',
+    CONTACTS_SUBTITLE: 'আপনার প্রিয়জনকে দেশে বিনামূল্যে কল করুন',
+    CONTACTS_ADD_CONTACT_LABEL: 'প্রিয়জনকে যোগ করুন',
     CONTACTS_ADD_LABEL: 'যোগ',
-    CONTACTS_COUNTRY_LABEL: (code) => `দেশ: ${COUNTRIES.bn[code]}`, // Google translate
-    CONTACTS_NAME_LABEL: 'নাম', // Google translate
-    // TODO this says mobile number
-    CONTACTS_PHONE_NUMBER_LABEL: 'মোবাইল নম্বর',
-    CONTACTS_EDIT_CONTACT_HEADER: 'সম্পাদন করা',
-    CONTACTS_EDIT_LABEL: 'সম্পাদন করা',
-    CONTACTS_SAVE_LABEL: 'সংরক্ষণ',
-    CONTACTS_LOGOUT_LABEL: 'প্রস্থান',
+    CONTACTS_COUNTRY_LABEL: (code) => `দেশ: ${COUNTRIES.bn[code]}`,
+    CONTACTS_NAME_LABEL: 'নাম',
+    CONTACTS_PHONE_NUMBER_LABEL: 'ফোন নম্বর',
+    CONTACTS_EDIT_CONTACT_HEADER: 'এডিট',
+    CONTACTS_EDIT_LABEL: 'এডিট',
+    CONTACTS_SAVE_LABEL: 'সেভ',
+    CONTACTS_LOGOUT_LABEL: 'বাহির',
     CONTACTS_CANCEL_LABEL: 'বাতিল',
-    CONTACTS_DELETE_LABEL: 'মুছে ফেলা',
-    CONTACTS_DELETE_CONTACT_LABEL: 'যোগাযোগ মুছুন',
-    CONTACTS_CANNOT_UNDO_MESSAGE: 'এই ক্রিয়াটি পূর্বাবস্থায় ফেরানো যাবে না',
-    CONTACTS_UNKNOWN_ERROR_MESSAGE: 'অজানা ত্রুটি', // Google translate
+    CONTACTS_DELETE_LABEL: 'মুছে ফেলুন',
+    CONTACTS_DELETE_CONTACT_LABEL: 'যোগাযোগ মুছে ফেলুন',
+    CONTACTS_CANNOT_UNDO_MESSAGE: 'এই কাজটি পরিবর্তন করা যাবে না!',
+    CONTACTS_UNKNOWN_ERROR_MESSAGE: 'কাজটি সম্ভব নয়', // TODO: This is technically incorrect, but contextually correct.
     /* errors: {
      *   DUPLICATE_CONTACT: 'You already have a loved one with this number',
      *   INVALID_PHONE_NUMBER: 'You have entered an invalid phone number',

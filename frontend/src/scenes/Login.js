@@ -22,11 +22,11 @@ const STRINGS = {
   en: EN_STRINGS,
   bn: {
     ...EN_STRINGS,
-    DISPLAY_TITLE: 'বাড়ীতে ফোন',
+    DISPLAY_TITLE: 'বাড়ীতে ফোন', // TODO: Fix technically correct.
     // TODO this also includes India in the list of countries
-    DISPLAY_SUBTITLE: 'ভারতে ফিরে বাংলাদেশে প্রিয়জনকে বিনামূল্যে কল করুন',
+    DISPLAY_SUBTITLE: 'প্রিয়জনকে দেশে বিনামূল্যে কল করুন',
     /* DATA_CONSUMPTION_COPY: '100MB = 40 min talk', */
-    FACEBOOK_SIGN_UP: 'ফেসবুক দিয়ে সাইন আপ',
+    FACEBOOK_SIGN_UP: 'ফেসবুক দিয়ে সংযোগ দিন',
   },
 };
 
