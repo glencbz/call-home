@@ -40,7 +40,7 @@ function mapObjectsToRecentCallResponse(
       (twilioCall) => twilioCall.twilioSid === call.incomingTwilioCallSid
     );
     return {
-      callId: call.id,
+      id: call.id,
       name: _.get(currentContact, 'name', null),
       phoneNumber: call.phoneNumber,
       startTime: call.createdAt.toISOString(),

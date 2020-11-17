@@ -1,26 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
-import { format, formatDistance } from 'date-fns';
+import { format, formatDistance, addSeconds } from 'date-fns';
 import CardContent from '@material-ui/core/CardContent';
+import { Redirect } from 'react-router-dom';
 import Container from '../components/shared/Container';
-
-const CONTACTS = [
-  {
-    callId: 1,
-    name: 'MY NAME',
-    phoneNumber: '+6588888888',
-    startTime: new Date().toISOString(),
-    endTime: new Date().toISOString(),
-  },
-  {
-    callId: 2,
-    name: 'MY NAME 2',
-    phoneNumber: '+6588888888',
-    startTime: new Date().toISOString(),
-    endTime: new Date().toISOString(),
-  },
-];
+import { getRecentCalls, RecentCall } from '../services/Call';
+import { useUserService } from '../contexts';
+import PATHS from './paths';
 
 const EN_STRINGS = {
   RECENT_TITLE: 'Recent Calls',
@@ -35,37 +22,71 @@ const STRINGS: Record<string, typeof EN_STRINGS> = {
   },
 };
 
-function ContactCard({ contact }: { contact: any }) {
+function formatCallDuration(duration: number) {
+  if (!duration) {
+    return 'NA';
+  }
+  const helperDate1 = new Date();
+  const helperDate2 = addSeconds(helperDate1, duration);
+  return formatDistance(helperDate1, helperDate2);
+}
+
+function CallCard({ call }: { call: RecentCall }) {
+  const durationText = formatCallDuration(call.duration);
   return (
     <Card style={{ marginBottom: 8 }}>
       <CardContent>
-        <Typography>{contact.name}</Typography>
-        <Typography>{contact.phoneNumber}</Typography>
+        <Typography>{call.name}</Typography>
+        <Typography>{call.phoneNumber}</Typography>
         <Typography>
-          {format(new Date(contact.startTime), 'yyyy')} mins
+          {format(new Date(call.startTime), 'dd MMM yyyy')}
         </Typography>
-        <Typography>
-          {formatDistance(
-            new Date(contact.startTime),
-            new Date(contact.endTime)
-          )}
-        </Typography>
+        <Typography>{durationText}</Typography>
       </CardContent>
     </Card>
   );
 }
 
-function ContactCards() {
+function CallCards({ calls }: { calls: RecentCall[] }) {
   return (
     <div>
-      {CONTACTS.map((contact) => {
-        return <ContactCard key={contact.callId} contact={contact} />;
+      {calls.map((call) => {
+        return <CallCard key={call.id} call={call} />;
       })}
     </div>
   );
 }
 
 export default function RecentCallsPage({ locale }: any) {
+  const [userState, userService] = useUserService();
+  const { me: user } = userState;
+  const [userId, setUserId] = useState<string>();
+  const [calls, setCalls] = useState<RecentCall[]>([]);
+
+  // Seems like user info is not persisting and requires getting data from endpoint again
+  useEffect(() => {
+    if (userService) {
+      userService.refreshSelf();
+    }
+  }, [userService]);
+  useEffect(() => {
+    if (userId) {
+      getRecentCalls(userId).then((recentCalls: RecentCall[]) =>
+        setCalls(recentCalls)
+      );
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    if (user) {
+      setUserId(user.id);
+    }
+  }, [user]);
+
+  if (!user) {
+    return <Redirect to={PATHS.RECENT} />;
+  }
+
   return (
     <Container
       style={{
@@ -83,7 +104,7 @@ export default function RecentCallsPage({ locale }: any) {
       >
         {STRINGS[locale].RECENT_TITLE}
       </Typography>
-      <ContactCards />
+      <CallCards calls={calls} />
     </Container>
   );
 }
