@@ -6,4 +6,5 @@ export default Object.freeze({
   TRANSACTIONS: '/transactions',
   VERIFY_PHONE_NUMBER: '/verify',
   VERIFY_PHONE_NUMBER_CODE: '/verify/code',
+  RECENT: '/recent',
 });

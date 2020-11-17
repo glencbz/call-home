@@ -16,6 +16,7 @@ import FeedbackIcon from '@material-ui/icons/Feedback';
 import PhoneInTalkIcon from '@material-ui/icons/PhoneInTalk';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import HistoryIcon from '@material-ui/icons/History';
 import { DateTime, Duration } from 'luxon';
 import DetectBrowserSnackbar from '../components/shared/DetectBrowserSnackbar';
 import Container from '../components/shared/Container';
@@ -94,6 +95,7 @@ const EN_STRINGS = {
     DUPLICATE_CONTACT: 'You already have a loved one with this number',
     INVALID_PHONE_NUMBER: 'You have entered an invalid phone number',
   },
+  CONTACTS_RECENT_CALLS: 'Recent calls',
 };
 
 const STRINGS: Record<string, typeof EN_STRINGS> = {
@@ -122,6 +124,8 @@ const STRINGS: Record<string, typeof EN_STRINGS> = {
      *   INVALID_PHONE_NUMBER: 'You have entered an invalid phone number',
      * }, */
   },
+  // TODO: Add translation
+  // CONTACTS_RECENT_CALLS: 'Recent calls',
 };
 
 type Locale = keyof typeof STRINGS;
@@ -509,6 +513,10 @@ export default function ContactsPage({ locale }: { locale: Locale }) {
     (window as any).location = '/oauth/logout';
   };
 
+  const onClickRecentCalls = async () => {
+    (window as any).location = '/recent';
+  };
+
   const openFeedbackDialog = () => setIsFeedbackDialogOpen(true);
   const userCallTimeDuration = Duration.fromObject({ seconds: user.callTime });
   const callLimitExceeded =
@@ -561,14 +569,31 @@ export default function ContactsPage({ locale }: { locale: Locale }) {
         {STRINGS[locale].CONTACTS_TITLE}
       </Typography>
       {subtitleContent}
-      <Typography
-        variant="body1"
-        style={{
-          marginBottom: '1rem',
-        }}
-      >
-        {STRINGS[locale].CONTACTS_COUNTRY_LABEL(user.destinationCountry)}
-      </Typography>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Typography
+          variant="body1"
+          style={{
+            marginBottom: '1rem',
+          }}
+        >
+          {STRINGS[locale].CONTACTS_COUNTRY_LABEL(user.destinationCountry)}
+        </Typography>
+        <Typography
+          variant="body1"
+          style={{
+            marginBottom: '1rem',
+          }}
+        >
+          <ActionLink
+            variant="body1"
+            role="button"
+            onClick={onClickRecentCalls}
+          >
+            <HistoryIcon />
+            {STRINGS[locale].CONTACTS_RECENT_CALLS}
+          </ActionLink>
+        </Typography>
+      </div>
       <div
         style={{
           // Make this the right height so that the action links are positioned correctly

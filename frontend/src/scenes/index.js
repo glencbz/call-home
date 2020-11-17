@@ -5,3 +5,4 @@ export { default as ContactsPage } from './ContactsPage';
 export { default as TransactionsPage } from './TransactionsPage';
 export { default as VerifyPhoneNumber } from './VerifyPhoneNumber';
 export { default as VerifyPhoneNumberCode } from './VerifyPhoneNumberCode';
+export { default as RecentCallsPage } from './RecentCallsPage';

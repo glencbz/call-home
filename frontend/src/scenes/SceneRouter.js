@@ -9,6 +9,7 @@ import {
   TransactionsPage,
   VerifyPhoneNumber,
   VerifyPhoneNumberCode,
+  RecentCallsPage,
 } from './index';
 
 export default function SceneRouter() {
@@ -41,6 +42,9 @@ export default function SceneRouter() {
       </Route>
       <Route path={PATHS.TRANSACTIONS}>
         <TransactionsPage locale={locale} />
+      </Route>
+      <Route path={PATHS.RECENT}>
+        <RecentCallsPage locale={locale} />
       </Route>
       <Route path={PATHS.LOGIN}>
         <Login locale={locale} />
