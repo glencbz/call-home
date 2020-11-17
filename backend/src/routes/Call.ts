@@ -17,11 +17,28 @@ const GET_SCHEMA = z.object({
   }),
 });
 
+const GET_RECENT_SCHEMA = z.object({
+  params: z.object({
+    userId: stringToNumberTransformer,
+  }),
+});
+
 function CallRoutes(
   callService: typeof CallService,
   twilioCallService: typeof TwilioCallService
 ): Router {
   const router = express.Router();
+
+  router.get(
+    '/:userId/calls/recent',
+    requireSelf,
+    validateRequest(GET_RECENT_SCHEMA, async (parsedReq, res, req) => {
+      const { userId } = parsedReq.params;
+      const recentCalls = await callService.listRecentCallsByUserId(userId);
+      // recentCalls[0].createdAt;
+      return res.status(200).json(recentCalls);
+    })
+  );
 
   router.get(
     '/:userId/calls/call-summary',

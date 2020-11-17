@@ -3,7 +3,11 @@ import { Op } from 'sequelize';
 import { logger } from '../config';
 import { sanitizeDbErrors } from './lib';
 import { shouldEnableCallLimits } from './Feature';
-import type { Call as CallEntity } from '../models';
+import type {
+  Call as CallEntity,
+  Contact as ContactEntity,
+  TwilioCall as TwilioCallEntity,
+} from '../models';
 import type Wallet from './Wallet';
 
 // TODO this isn't really used
@@ -11,6 +15,8 @@ const callAggregationPeriod = 'month';
 
 function CallService(
   CallModel: typeof CallEntity,
+  ContactModel: typeof ContactEntity,
+  TwilioCallModel: typeof TwilioCallEntity,
   userService: any,
   contactService: any,
   walletService: Wallet
@@ -88,10 +94,21 @@ function CallService(
       },
     });
   }
+
+  async function listRecentCallsByUserId(userId: number) {
+    return CallModel.findAll({
+      where: {
+        userId,
+      },
+      include: [ContactModel, TwilioCallModel],
+    });
+  }
+
   return {
     createCall,
     getUserCallsForPeriod,
     getCallByIncomingSid,
+    listRecentCallsByUserId,
   };
 }
 
