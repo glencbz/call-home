@@ -7,14 +7,14 @@ import Container from '../components/shared/Container';
 
 const CONTACTS = [
   {
-    contactId: 1,
+    callId: 1,
     name: 'MY NAME',
     phoneNumber: '+6588888888',
     startTime: new Date().toISOString(),
     endTime: new Date().toISOString(),
   },
   {
-    contactId: 2,
+    callId: 2,
     name: 'MY NAME 2',
     phoneNumber: '+6588888888',
     startTime: new Date().toISOString(),
@@ -59,7 +59,7 @@ function ContactCards() {
   return (
     <div>
       {CONTACTS.map((contact) => {
-        return <ContactCard key={contact.contactId} contact={contact} />;
+        return <ContactCard key={contact.callId} contact={contact} />;
       })}
     </div>
   );

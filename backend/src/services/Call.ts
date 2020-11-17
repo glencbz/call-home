@@ -15,8 +15,6 @@ const callAggregationPeriod = 'month';
 
 function CallService(
   CallModel: typeof CallEntity,
-  ContactModel: typeof ContactEntity,
-  TwilioCallModel: typeof TwilioCallEntity,
   userService: any,
   contactService: any,
   walletService: Wallet
@@ -100,7 +98,6 @@ function CallService(
       where: {
         userId,
       },
-      include: [ContactModel, TwilioCallModel],
     });
   }
 

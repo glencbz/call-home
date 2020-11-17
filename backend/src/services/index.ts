@@ -44,8 +44,6 @@ const workpassValidationService = WorkpassValidation(
 );
 const callService = Call(
   models.Call,
-  models.Contact,
-  models.TwilioCall,
   userService,
   contactService,
   walletService

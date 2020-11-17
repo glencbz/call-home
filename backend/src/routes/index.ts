@@ -14,7 +14,7 @@ import PhoneNumberValidation from './PhoneNumberValidation';
 import WorkpassValidation from './WorkpassValidation';
 import OAuth = require('./OAuth');
 
-const callRoute = Call(services.Call, services.TwilioCall);
+const callRoute = Call(services.Call, services.TwilioCall, services.Contact);
 const callTokenRoute = CallToken();
 const twilioRoute = Twilio(services.Call, services.TwilioCall);
 const oAuthRoute = OAuth();

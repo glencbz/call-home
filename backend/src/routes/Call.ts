@@ -1,15 +1,19 @@
 import express, { Router } from 'express';
 import * as z from 'zod';
+import _ from 'lodash';
 import { requireSelf } from './middlewares';
 import type {
   Call as CallService,
   TwilioCall as TwilioCallService,
+  Contact as ContactService,
 } from '../services';
 import Stopwatch from '../util/stopwatch';
 import {
   validateRequest,
   stringToNumberTransformer,
 } from './helpers/validation';
+import { Call, Contact } from '../models';
+import TwilioCall from '../models/TwilioCall';
 
 const GET_SCHEMA = z.object({
   params: z.object({
@@ -23,9 +27,32 @@ const GET_RECENT_SCHEMA = z.object({
   }),
 });
 
+function mapObjectsToRecentCallResponse(
+  calls: Call[],
+  contacts: Contact[],
+  twilioCalls: TwilioCall[]
+) {
+  return calls.map((call) => {
+    const currentContact = contacts.find(
+      (contact) => contact.id === call.contactId
+    );
+    const currentTwilioCall = twilioCalls.find(
+      (twilioCall) => twilioCall.twilioSid === call.incomingTwilioCallSid
+    );
+    return {
+      callId: call.id,
+      name: _.get(currentContact, 'name', null),
+      phoneNumber: call.phoneNumber,
+      startTime: call.createdAt.toISOString(),
+      duration: _.get(currentTwilioCall, 'duration', null),
+    };
+  });
+}
+
 function CallRoutes(
   callService: typeof CallService,
-  twilioCallService: typeof TwilioCallService
+  twilioCallService: typeof TwilioCallService,
+  contactService: typeof ContactService
 ): Router {
   const router = express.Router();
 
@@ -35,8 +62,24 @@ function CallRoutes(
     validateRequest(GET_RECENT_SCHEMA, async (parsedReq, res, req) => {
       const { userId } = parsedReq.params;
       const recentCalls = await callService.listRecentCallsByUserId(userId);
-      // recentCalls[0].createdAt;
-      return res.status(200).json(recentCalls);
+      const contactIds = _.chain(recentCalls)
+        .map((contact) => contact.contactId)
+        .uniq();
+      const contacts = <Contact[]>(
+        await contactService.listContactsFromIds(contactIds)
+      );
+      const twilioCallSids = recentCalls.map(
+        (call) => call.incomingTwilioCallSid
+      );
+      const twilioCalls = await twilioCallService.listTwilioCallsBySids(
+        twilioCallSids
+      );
+
+      return res
+        .status(200)
+        .json(
+          mapObjectsToRecentCallResponse(recentCalls, contacts, twilioCalls)
+        );
     })
   );
 
