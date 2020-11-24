@@ -2,6 +2,7 @@ import apiClient from './apiClient';
 
 export interface RecentCall {
   id: number;
+  avatar: string | null;
   duration: number;
   name: string;
   phoneNumber: string;

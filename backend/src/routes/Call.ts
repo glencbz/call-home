@@ -41,6 +41,7 @@ function mapObjectsToRecentCallResponse(
     );
     return {
       id: call.id,
+      avatar: _.get(currentContact, 'avatar', null),
       name: _.get(currentContact, 'name', null),
       phoneNumber: call.phoneNumber,
       startTime: call.createdAt.toISOString(),

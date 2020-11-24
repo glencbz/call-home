@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
-import Card from '@material-ui/core/Card';
-import { format, formatDistance, addSeconds } from 'date-fns';
-import CardContent from '@material-ui/core/CardContent';
-import { Redirect } from 'react-router-dom';
+import {
+  format,
+  formatDistance,
+  addSeconds,
+  isToday,
+  isYesterday,
+} from 'date-fns';
+import { useHistory, Redirect } from 'react-router-dom';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+
+import { withStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
 import Container from '../components/shared/Container';
 import { getRecentCalls, RecentCall } from '../services/Call';
 import { useUserService } from '../contexts';
@@ -11,6 +19,8 @@ import PATHS from './paths';
 
 const EN_STRINGS = {
   RECENT_TITLE: 'Recent Calls',
+  TODAY: 'Today',
+  YESTERDAY: 'Yesterday',
 };
 
 const STRINGS: Record<string, typeof EN_STRINGS> = {
@@ -31,28 +41,92 @@ function formatCallDuration(duration: number) {
   return formatDistance(helperDate1, helperDate2);
 }
 
-function CallCard({ call }: { call: RecentCall }) {
+const RecentCallsBox: any = withStyles((theme) => ({
+  root: {
+    backgroundColor: 'white',
+    border: `1px solid ${theme.palette.grey[200]}`,
+  },
+}))(Box);
+
+function prettyFormatDate(date: string, locale: string) {
+  const dateObj = new Date(date);
+  if (isToday(dateObj)) {
+    return STRINGS[locale].TODAY;
+  }
+  if (isYesterday(dateObj)) {
+    return STRINGS[locale].YESTERDAY;
+  }
+  return format(dateObj, 'dd MMM yyyy');
+}
+
+function CallCard({ call, locale }: { call: RecentCall; locale: string }) {
   const durationText = formatCallDuration(call.duration);
   return (
-    <Card style={{ marginBottom: 8 }}>
-      <CardContent>
-        <Typography>{call.name}</Typography>
-        <Typography>{call.phoneNumber}</Typography>
-        <Typography>
-          {format(new Date(call.startTime), 'dd MMM yyyy')}
-        </Typography>
-        <Typography>{durationText}</Typography>
-      </CardContent>
-    </Card>
+    <RecentCallsBox
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        height: '4em',
+      }}
+    >
+      <img
+        style={{
+          height: '2.5rem',
+          width: '2.5rem',
+          marginRight: '8px',
+          marginLeft: '8px',
+        }}
+        alt=""
+        src={`/images/avatars/${call.avatar || 'placeholder'}.svg`}
+      />
+      <div style={{ width: '100%', marginRight: '8px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Typography>{call.name}</Typography>
+          <Typography>{prettyFormatDate(call.startTime, locale)}</Typography>
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            fontSize: '0.675rem',
+          }}
+        >
+          <Typography variant="body2">{call.phoneNumber}</Typography>
+          <Typography variant="body2">{durationText}</Typography>
+        </div>
+      </div>
+    </RecentCallsBox>
   );
 }
 
-function CallCards({ calls }: { calls: RecentCall[] }) {
+function CallCards({ calls, locale }: { calls: RecentCall[]; locale: string }) {
   return (
-    <div>
+    <div style={{ backgroundColor: 'white', overflow: 'scroll' }}>
       {calls.map((call) => {
-        return <CallCard key={call.id} call={call} />;
+        return <CallCard key={call.id} call={call} locale={locale} />;
       })}
+    </div>
+  );
+}
+
+function BackButton() {
+  const history = useHistory();
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+      }}
+      onClick={() => {
+        history.push(PATHS.CONTACTS);
+      }}
+      aria-hidden="true"
+    >
+      <ChevronLeftIcon />
+      back
     </div>
   );
 }
@@ -94,6 +168,7 @@ export default function RecentCallsPage({ locale }: any) {
         backgroundSize: 'contain',
       }}
     >
+      <BackButton />
       <Typography
         variant="h5"
         component="h1"
@@ -104,7 +179,7 @@ export default function RecentCallsPage({ locale }: any) {
       >
         {STRINGS[locale].RECENT_TITLE}
       </Typography>
-      <CallCards calls={calls} />
+      <CallCards calls={calls} locale={locale} />
     </Container>
   );
 }
