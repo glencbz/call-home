@@ -1,6 +1,6 @@
 import { sanitizeDbErrors } from './lib';
 import type { User as UserEntity } from '../models';
-import type { AllowlistEntry, PhoneNumberValidation } from './index';
+import type { AllowlistEntry, PhoneNumberValidation } from '.';
 import { logger } from '../config';
 
 function UserService(

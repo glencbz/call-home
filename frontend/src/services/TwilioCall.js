@@ -4,7 +4,7 @@ import { getLogger } from 'loglevel';
 import getToken from './CallToken';
 
 // TODO handle production environments better
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = true;
 const twilioLogger = getLogger(Device.packageName);
 twilioLogger.setLevel('trace');
 

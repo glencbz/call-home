@@ -2,7 +2,7 @@
   height: calc(0.8 * var(--viewport-height));
   padding: 1em;
   background-color: #F7FBFD; /* primary 300 */
-  background-image: url(images/contacts_dialog_bg.svg);
+  background-image: url(/images/contacts_dialog_bg.svg);
   background-repeat: no-repeat;
   background-size: contain;
   background-position-x: center;

@@ -10,7 +10,9 @@ import {
   VerifyPhoneNumber,
   VerifyPhoneNumberCode,
   RecentCallsPage,
-} from './index';
+  VerifyWorkpass,
+} from '.';
+import { Locale } from './types';
 
 export default function SceneRouter() {
   // TODO replace this with a proper switching logic
@@ -21,33 +23,43 @@ export default function SceneRouter() {
   if (queryLang) {
     localStorage.setItem('lang', queryLang);
   }
-  const locale = queryLang || localStorageLang || 'en';
+  const locale: Locale =
+    (queryLang as Locale) || (localStorageLang as Locale) || 'en';
 
   return (
     <Switch>
       <Route path={PATHS.ADMIN}>
-        <AdminPage locale={locale} />
+        <AdminPage locale={locale} routePath={PATHS.ADMIN} />
       </Route>
       <Route path={PATHS.VERIFY_PHONE_NUMBER_CODE}>
-        <VerifyPhoneNumberCode locale={locale} />
+        <VerifyPhoneNumberCode
+          locale={locale}
+          routePath={PATHS.VERIFY_PHONE_NUMBER_CODE}
+        />
       </Route>
       <Route path={PATHS.VERIFY_PHONE_NUMBER}>
-        <VerifyPhoneNumber locale={locale} />
+        <VerifyPhoneNumber
+          locale={locale}
+          routePath={PATHS.VERIFY_PHONE_NUMBER}
+        />
+      </Route>
+      <Route path={PATHS.VERIFY_WORKPASS}>
+        <VerifyWorkpass locale={locale} routePath={PATHS.VERIFY_WORKPASS} />
       </Route>
       <Route path={PATHS.CALLING}>
-        <CallingPage locale={locale} />
+        <CallingPage locale={locale} routePath={PATHS.CALLING} />
       </Route>
       <Route path={PATHS.CONTACTS}>
-        <ContactsPage locale={locale} />
+        <ContactsPage locale={locale} routePath={PATHS.CONTACTS} />
       </Route>
       <Route path={PATHS.TRANSACTIONS}>
-        <TransactionsPage locale={locale} />
+        <TransactionsPage />
       </Route>
       <Route path={PATHS.RECENT}>
         <RecentCallsPage locale={locale} />
       </Route>
       <Route path={PATHS.LOGIN}>
-        <Login locale={locale} />
+        <Login locale={locale} routePath={PATHS.LOGIN} />
       </Route>
     </Switch>
   );

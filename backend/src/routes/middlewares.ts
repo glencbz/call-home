@@ -2,8 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 
 // TODO don't hardcode this
 import {
-  WorkpassValidation as WorkpassValidationService,
-  PhoneNumberValidation as PhoneNumberValidationService,
+  UserValidation as UserValidationService,
   User as UserService,
   Feature,
 } from '../services';
@@ -90,14 +89,14 @@ async function injectDbUser(req: AuthenticatedRequest) {
     );
     return;
   }
-  const [phoneNumberValidation, workpassValidation] = await Promise.all([
-    PhoneNumberValidationService.getPhoneNumberValidationForUser(user.id),
-    WorkpassValidationService.getWorkpassValidationForUser(user.id),
-  ]);
+  const {
+    verifications,
+    state,
+  } = await UserValidationService.getVerificationsForUser(user.id);
   const userResponse = userToUserResponse(
     user,
-    phoneNumberValidation,
-    workpassValidation
+    verifications.phoneNumber,
+    state
   );
   req.user = {
     ...userProfileResponse,
@@ -119,21 +118,18 @@ async function requireAdmin(
   return next();
 }
 
-function isUserVerified(user: UserResponse): boolean {
-  if (Feature.shouldEnableWorkpassValidation(user.id)) {
-    return (
-      user.verificationState.phoneNumber && user.verificationState.workpass
-    );
-  }
-  return user.verificationState.phoneNumber;
-}
-
 async function requireVerified(
   req: UserInjectedRequest,
   res: Response,
   next: NextFunction
 ) {
-  if (!req.user || !isUserVerified(req.user)) {
+  if (
+    !req.user ||
+    !UserValidationService.isUserVerified(
+      req.user.id,
+      req.user.verificationState
+    )
+  ) {
     sendForbiddenResponse(req, res);
     return;
   }
@@ -177,5 +173,4 @@ export {
   requireAdmin,
   requireVerified,
   requireSelf,
-  isUserVerified,
 };

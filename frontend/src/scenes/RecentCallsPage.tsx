@@ -59,7 +59,7 @@ function CallCards({ calls }: { calls: RecentCall[] }) {
 
 export default function RecentCallsPage({ locale }: any) {
   const [userState, userService] = useUserService();
-  const { me: user } = userState;
+  const { me: user } = userState || {};
   const [userId, setUserId] = useState<string>();
   const [calls, setCalls] = useState<RecentCall[]>([]);
 
@@ -79,7 +79,7 @@ export default function RecentCallsPage({ locale }: any) {
 
   useEffect(() => {
     if (user) {
-      setUserId(user.id);
+      setUserId(String(user.id));
     }
   }, [user]);
 

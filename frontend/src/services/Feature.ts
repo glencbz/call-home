@@ -1,4 +1,4 @@
-import apiClient from './apiClient';
+import { noRedirectClient, UnauthenticatedError } from './apiClient';
 import ObservableService from './observableService';
 
 export interface FeatureState {
@@ -18,11 +18,18 @@ export default class FeatureService extends ObservableService<FeatureState> {
   }
 
   async refreshFeatures(): Promise<FeatureState> {
-    const features = (await apiClient.get(
-      `${featureEndpoint}/`
-    )) as FeatureState;
-    this.state = features;
-    this.notify();
-    return this.state;
+    try {
+      const features = (await noRedirectClient.get(
+        `${featureEndpoint}/`
+      )) as FeatureState;
+      this.state = features;
+      this.notify();
+      return this.state;
+    } catch (e) {
+      if (e instanceof UnauthenticatedError) {
+        return this.state;
+      }
+      throw e;
+    }
   }
 }

@@ -49,21 +49,6 @@ class User extends Model<User> {
   })
   @Column
   destinationCountry: string;
-
-  // TODO these fields exist just for the backfill job
-  @Validate({
-    is: {
-      args: [/\+65[0-9]{8}$/],
-      msg: 'Phone number should start with +65 and be followed by 8 digits.',
-    },
-  })
-  @Unique
-  @Column(DataType.TEXT)
-  phoneNumber: string | null;
-
-  @Default(false)
-  @Column
-  isPhoneNumberValidated: boolean;
 }
 
 export default User;

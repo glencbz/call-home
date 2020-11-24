@@ -7,6 +7,7 @@ import type {
   UserTypes,
 } from '../models';
 import { logger } from '../config';
+import { VerificationState } from '../services';
 
 export interface UserResponse {
   id: number;
@@ -15,11 +16,7 @@ export interface UserResponse {
   destinationCountry: string;
   role: UserTypes;
 
-  verificationState: {
-    phoneNumber: boolean;
-    workpass: boolean;
-  };
-
+  verificationState: VerificationState;
   phoneNumber: string | null;
 }
 
@@ -68,7 +65,7 @@ function contactToContactResponse(contact: Contact) {
 function userToUserResponse(
   user: User,
   phoneNumberValidation: PhoneNumberValidation | null,
-  workpassValidation: WorkpassValidation | null
+  verificationState: VerificationState
 ): UserResponse {
   const { id, name, email, destinationCountry, role } = user;
 
@@ -79,10 +76,7 @@ function userToUserResponse(
     destinationCountry,
     role,
     phoneNumber: phoneNumberValidation && phoneNumberValidation.phoneNumber,
-    verificationState: {
-      phoneNumber: phoneNumberValidation?.isPhoneNumberValidated || false,
-      workpass: workpassValidation?.isWorkpassValidated || false,
-    },
+    verificationState,
   };
 }
 

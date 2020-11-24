@@ -39,8 +39,9 @@ import {
   formatDurationInDaysHoursMinutes,
 } from '../util/timeFormatters';
 import { getNextRefresh } from '../services/PeriodicCredit';
-import PATHS from './paths';
+import PATHS, { useRouting } from './paths';
 import './ContactsPage.css';
+import { SceneProps } from './types';
 
 const COUNTRIES = {
   en: {
@@ -128,8 +129,6 @@ const STRINGS: Record<string, typeof EN_STRINGS> = {
   // CONTACTS_RECENT_CALLS: 'Recent calls',
 };
 
-type Locale = keyof typeof STRINGS;
-
 const AddContactButton = withStyles((theme) => ({
   root: {
     backgroundColor: 'white',
@@ -197,7 +196,7 @@ const DialogErrorButton = withDialogButtonStyles(ErrorButton);
 
 function AddContactDialog({ open, onClose, locale }: any) {
   const [userState] = useUserService();
-  const { me: user } = userState;
+  const { me: user } = userState || {};
   const [, contactService] = useContactService();
   const [newContactName, setNewContactName] = useState('');
   const [newContactPhoneNumber, setNewContactPhoneNumber] = useState('');
@@ -217,7 +216,7 @@ function AddContactDialog({ open, onClose, locale }: any) {
     try {
       setErrorMessage(null);
       setIsRequestInFlight(true);
-      await (contactService as any).createContact(user.id, {
+      await (contactService as any).createContact((user as any).id, {
         name: newContactName,
         phoneNumber: newContactPhoneNumber,
         avatar: newContactAvatarChoice,
@@ -259,7 +258,9 @@ function AddContactDialog({ open, onClose, locale }: any) {
         value={newContactPhoneNumber}
         onChange={(event) => setNewContactPhoneNumber(event.target.value)}
         InputProps={{
-          inputComponent: (PhoneNumberMasks as any)[user.destinationCountry],
+          inputComponent: (PhoneNumberMasks as any)[
+            (user as any).destinationCountry
+          ],
         }}
         className="contacts-dialog-input"
       />
@@ -288,7 +289,7 @@ function AddContactDialog({ open, onClose, locale }: any) {
 
 function EditContactDialog({ contact, open, onClose, locale }: any) {
   const [userState] = useUserService();
-  const { me: user } = userState;
+  const { me: user } = userState || {};
   const [, contactService] = useContactService();
   const [newContactName, setNewContactName] = useState(contact.name);
   const [isDeletingContact, setIsDeletingContact] = useState(false);
@@ -306,11 +307,15 @@ function EditContactDialog({ contact, open, onClose, locale }: any) {
     try {
       setErrorMessage(null);
       setIsRequestInFlight(true);
-      await (contactService as any).updateContact(user.id, contact.id, {
-        name: newContactName,
-        phoneNumber: newContactPhoneNumber,
-        avatar: newContactAvatarChoice,
-      });
+      await (contactService as any).updateContact(
+        (user as any).id,
+        contact.id,
+        {
+          name: newContactName,
+          phoneNumber: newContactPhoneNumber,
+          avatar: newContactAvatarChoice,
+        }
+      );
       onClose();
     } catch (error) {
       if (error instanceof ApiValidationError) {
@@ -326,7 +331,7 @@ function EditContactDialog({ contact, open, onClose, locale }: any) {
   };
 
   const deleteContact = async () => {
-    await (contactService as any).deleteContact(user.id, contact.id);
+    await (contactService as any).deleteContact((user as any).id, contact.id);
     onClose();
   };
 
@@ -353,7 +358,9 @@ function EditContactDialog({ contact, open, onClose, locale }: any) {
         value={newContactPhoneNumber}
         onChange={(event) => setNewContactPhoneNumber(event.target.value)}
         InputProps={{
-          inputComponent: (PhoneNumberMasks as any)[user.destinationCountry],
+          inputComponent: (PhoneNumberMasks as any)[
+            (user as any).destinationCountry
+          ],
         }}
         className="contacts-dialog-input"
       />
@@ -461,10 +468,11 @@ function CallContactButton({ contactService, contact, disabled }: any) {
   );
 }
 
-export default function ContactsPage({ locale }: { locale: Locale }) {
+export default function ContactsPage({ locale, routePath }: SceneProps) {
+  const routeResult = useRouting(routePath);
   const [featureState] = useFeatureService();
   const [userState, userService] = useUserService();
-  const { me: user } = userState;
+  const { me: user } = userState || {};
   const [contactState, contactService] = useContactService();
   const { contacts = [], activeContact } = contactState;
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -499,8 +507,8 @@ export default function ContactsPage({ locale }: { locale: Locale }) {
     });
   }, []);
 
-  if (!user) {
-    return <Redirect to={PATHS.LOGIN} />;
+  if (routeResult.shouldRender) {
+    return routeResult.renderElement;
   }
   if (activeContact) {
     return <Redirect to={PATHS.CALLING} />;
@@ -518,7 +526,9 @@ export default function ContactsPage({ locale }: { locale: Locale }) {
   };
 
   const openFeedbackDialog = () => setIsFeedbackDialogOpen(true);
-  const userCallTimeDuration = Duration.fromObject({ seconds: user.callTime });
+  const userCallTimeDuration = Duration.fromObject({
+    seconds: (user as any).callTime,
+  });
   const callLimitExceeded =
     featureState?.CALL_LIMITS && userCallTimeDuration.as('minutes') < 1;
 
@@ -576,7 +586,9 @@ export default function ContactsPage({ locale }: { locale: Locale }) {
             marginBottom: '1rem',
           }}
         >
-          {STRINGS[locale].CONTACTS_COUNTRY_LABEL(user.destinationCountry)}
+          {STRINGS[locale].CONTACTS_COUNTRY_LABEL(
+            (user as any).destinationCountry
+          )}
         </Typography>
         <Typography
           variant="body1"

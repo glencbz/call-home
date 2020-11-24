@@ -26,8 +26,7 @@ const phoneNumberValidationRoute = PhoneNumberValidation(
 const userRoute = User(
   services.User,
   services.PeriodicCredit,
-  services.PhoneNumberValidation,
-  services.WorkpassValidation,
+  services.UserValidation,
   services.Wallet
 );
 const contactRoute = Contact(services.Contact);

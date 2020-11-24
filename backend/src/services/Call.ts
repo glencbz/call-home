@@ -3,21 +3,18 @@ import { Op } from 'sequelize';
 import { logger } from '../config';
 import { sanitizeDbErrors } from './lib';
 import { shouldEnableCallLimits } from './Feature';
-import type {
-  Call as CallEntity,
-  Contact as ContactEntity,
-  TwilioCall as TwilioCallEntity,
-} from '../models';
-import type Wallet from './Wallet';
+import type { Call as CallEntity } from '../models';
+import type { Contact, Wallet, User, UserValidation } from '.';
 
 // TODO this isn't really used
 const callAggregationPeriod = 'month';
 
 function CallService(
   CallModel: typeof CallEntity,
-  userService: any,
-  contactService: any,
-  walletService: Wallet
+  userService: typeof User,
+  contactService: typeof Contact,
+  userValidationService: typeof UserValidation,
+  walletService: typeof Wallet
 ) {
   async function checkWalletBalance(userId: number) {
     const wallet = await walletService.getWalletForUser(userId);
@@ -35,7 +32,13 @@ function CallService(
   // TODO This is actually wrong, we should be authorizing the token, not the call
   async function validateCall(userId: number, contactId: number) {
     const user = await userService.getUser(userId);
-    if (!user.isPhoneNumberValidated) {
+    if (!user) {
+      throw new Error(`Authorization error for user ${userId}`);
+    }
+
+    const isUserVerified = await userValidationService.isUserVerified(userId);
+    logger.info('Is user verified? %s', isUserVerified);
+    if (!isUserVerified) {
       throw new Error(`Authorization error for user ${userId}`);
     }
 
@@ -46,8 +49,15 @@ function CallService(
     const userContacts = await contactService.listContactsByUserId(userId);
 
     if (
-      userContacts.findIndex((contact: any) => contact.id === contactId) < 0
+      userContacts.findIndex(
+        (contact: CallEntity) => contact.id === contactId
+      ) < 0
     ) {
+      logger.warn(
+        'Authorization failed for userId %s and contactId %s',
+        userId,
+        contactId
+      );
       throw new Error(`Authorization error for user ${userId}`);
     }
     return true;

@@ -23,6 +23,7 @@ import { ApiValidationError } from '../services/apiClient';
 import useAdminRoute from '../util/useAdminRoute';
 import PATHS from './paths';
 import { formatSecondsWithHours } from '../util/timeFormatters';
+import { SceneProps } from './types';
 
 function AllowlistTabContent() {
   const [allowlistState, allowlistService] = useAllowlistService();
@@ -266,7 +267,7 @@ function TabPanel({
   return children;
 }
 
-export default function AdminPage() {
+export default function AdminPage({ locale, routePath }: SceneProps) {
   const [tabIndex, setTabIndex] = useState(0);
 
   const handleTabChange = useCallback(

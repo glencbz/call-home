@@ -22,7 +22,7 @@ if (isProd) {
 
 function InitApp() {
   const [userState, userService] = useUserService();
-  const { me: user } = userState;
+  const { me: user } = userState || {};
 
   useEffect(() => {
     const listener = (event: Event) => {

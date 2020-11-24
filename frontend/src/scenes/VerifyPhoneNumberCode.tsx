@@ -9,6 +9,7 @@ import RoundedButton, {
 } from '../components/shared/RoundedButton';
 import { beginPhoneNumberValidation, login } from '../services/Auth';
 import PATHS from './paths';
+import { SceneProps } from './types';
 
 const Container: React.FunctionComponent<any> = ContainerWrong;
 
@@ -47,11 +48,10 @@ function formatRateLimitExpiry(rateLimitExpiryMillis: number) {
   return `${minutes}:${seconds}`;
 }
 
-export default function VerificationPhoneNumberCode({ locale }: any) {
+export default function VerificationPhoneNumberCode({ locale }: SceneProps) {
   const [userState, userService] = useUserService();
-  const { me: user } = userState;
+  const { me: user, verificationPhoneNumber: phoneNumber } = userState || {};
   const [featureState, featureService] = useFeatureService();
-  const { verificationPhoneNumber: phoneNumber } = userState;
   const [code, setCode] = useState('');
   const [hasBadOtpError, setHasBadOtpError] = useState(false);
   const [hasAllowlistError, setHasAllowlistError] = useState(false);
@@ -99,6 +99,7 @@ export default function VerificationPhoneNumberCode({ locale }: any) {
     return null;
   }
 
+  // TODO This can't use the unified routing because that doesn't accommodate the phone number verification code route.
   let isUserVerified;
 
   if (featureState.WORKPASS_VALIDATION) {

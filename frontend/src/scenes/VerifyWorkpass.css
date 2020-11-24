@@ -1,0 +1,7 @@
+svg.serial-number-expand {
+  transition: 500ms;
+}
+
+.serial-number-expand-expanded {
+  transform: rotateX(-180deg);
+}

@@ -13,6 +13,7 @@ import Container from '../components/shared/Container';
 import DetectBrowserSnackbar from '../components/shared/DetectBrowserSnackbar';
 import { makeCall, isTransientIssue } from '../services/TwilioCall';
 import { formatCallTime } from '../util/timeFormatters';
+import { SceneProps } from './types';
 
 const EN_STRINGS = {
   CALLING_CONNECTING: 'Connecting...',
@@ -74,7 +75,7 @@ function subscribeToOptionalDevice(device, eventName, listener) {
   };
 }
 
-export default function CallingPage({ locale }) {
+export default function CallingPage({ locale, routePath }) {
   const [hasAttemptedConnection, setHasAttemptedConnection] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [connectTime, setConnectTime] = useState(null);

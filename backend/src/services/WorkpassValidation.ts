@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { logger } from '../config';
 import type { WorkpassValidation as WorkpassValidationEntity } from '../models';
 import type { WorkpassClient } from './index';
 import type { WorkpassStatus } from './WorkpassClient';
@@ -14,7 +15,7 @@ interface WorkpassValidationResult {
   result: 'success' | 'failure';
   reason?: {
     workpassStatus: WorkpassStatus;
-    code?: 'conflict' | 'bad-status' | 'bad-expiry';
+    code?: 'conflict' | 'expired' | 'error';
   };
 }
 
@@ -88,20 +89,25 @@ function WorkpassValidationService(
 
     const { status: workpassStatus, expiry } = serialNumberValidationResult;
 
-    if (workpassStatus !== 'valid') {
+    if (workpassStatus === 'error' || expiry === null) {
+      logger.warn(
+        'Unable to fetch work pass status. Got %s %s',
+        workpassStatus,
+        expiry
+      );
       return {
         result: 'failure',
         reason: {
-          code: 'bad-status',
+          code: 'error',
           workpassStatus,
         },
       };
     }
-    if (expiry === null) {
+    if (workpassStatus === 'invalid') {
       return {
         result: 'failure',
         reason: {
-          code: 'bad-expiry',
+          code: 'expired',
           workpassStatus,
         },
       };
@@ -125,6 +131,7 @@ function WorkpassValidationService(
       serialNumberSha256,
       expiryDate: expiry.toJSDate(),
       lastFetched: requestTime,
+      isWorkpassValidated: true,
     });
     return {
       result: 'success',

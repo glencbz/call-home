@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
-import { useUserService } from '../contexts';
 import Container from '../components/shared/Container';
 import DetectBrowserSnackbar from '../components/shared/DetectBrowserSnackbar';
-import PATHS from './paths';
+import { useRouting } from './paths';
 
 import './Login.css';
 
@@ -50,23 +48,11 @@ const FacebookButton = withStyles(() => ({
   },
 }))(Button);
 
-export default function Login({ locale }) {
-  const [userState, userService] = useUserService();
-  const [shouldHideScreen, setShouldHideScreen] = useState(true);
-  const { me: user } = userState;
+export default function Login({ locale, routePath }) {
+  const routeResult = useRouting(routePath);
 
-  useEffect(() => {
-    if (userService) {
-      userService.refreshSelf().finally(() => setShouldHideScreen(false));
-    }
-  }, [userService]);
-
-  if (shouldHideScreen) {
-    return null;
-  }
-
-  if (user) {
-    return <Redirect to={PATHS.VERIFY_PHONE_NUMBER} />;
+  if (routeResult.shouldRender) {
+    return routeResult.renderElement;
   }
 
   return (

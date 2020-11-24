@@ -77,7 +77,7 @@ function TwilioRoutes(
         contactId,
         CallSid: incomingTwilioCallSid,
       } = parsedReq.body;
-      req.log.info('creating call for', userId, contactId);
+      req.log.info('creating call for %s, %s', userId, contactId);
 
       try {
         const { phoneNumber } = await callService.createCall({
@@ -98,6 +98,7 @@ function TwilioRoutes(
         );
         return res.send(response.toString());
       } catch (e) {
+        req.log.warn('Got error while making TwiML call %s', e);
         if (e.message.startsWith('Authorization')) {
           return res.status(403).send(e.message);
         }
