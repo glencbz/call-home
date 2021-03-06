@@ -92,6 +92,7 @@ export default function RedeemableCodeTabContent() {
             <TableRow>
               <TableCell>Code</TableCell>
               <TableCell>QR</TableCell>
+              <TableCell>Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -106,6 +107,7 @@ export default function RedeemableCodeTabContent() {
                     <CropFreeIcon />
                   </IconButton>
                 </TableCell>
+                <TableCell>{redeemableCode.redemptionLimit}</TableCell>
               </TableRow>
             ))}
           </TableBody>

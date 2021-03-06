@@ -49,6 +49,9 @@ class User extends Model<User> {
   })
   @Column
   destinationCountry: string;
+
+  @Column
+  createdAt: string;
 }
 
 export default User;

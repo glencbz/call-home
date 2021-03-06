@@ -18,4 +18,5 @@ export interface UserWalletResponse {
 
   phoneNumber: string | null;
   callTime: number | null;
+  createdAt: string | null;
 }

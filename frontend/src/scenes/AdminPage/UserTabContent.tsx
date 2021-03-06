@@ -14,6 +14,7 @@ interface UserGridRow {
   phoneNumber: string | null;
   destinationCountry: string;
   callTime: string | null;
+  createdAt: string | null;
   hasAdminGrantedValidation: boolean;
 }
 
@@ -72,9 +73,12 @@ export default function UserTabContent() {
     phoneNumber: user.phoneNumber,
     destinationCountry: user.destinationCountry,
     callTime:
-      user.callTime === undefined || user.callTime === null
+      user.callTime == null
         ? ''
         : formatSecondsWithHours(user.callTime),
+    createdAt: user.createdAt == null
+        ? ''
+        : user.createdAt,
     hasAdminGrantedValidation: user.verificationState.adminGranted,
   }));
 
