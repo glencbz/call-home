@@ -3,6 +3,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
+import Link from '@material-ui/core/Link';
+import FeedbackIcon from '@material-ui/icons/Feedback';
 import Container from 'components/shared/Container';
 import DetectBrowserSnackbar from 'components/shared/DetectBrowserSnackbar';
 import { SceneProps } from 'scenes/types';
@@ -15,6 +17,7 @@ const EN_STRINGS = {
   DISPLAY_SUBTITLE: 'Make free calls to loved ones back home in Bangladesh',
   DATA_CONSUMPTION_COPY: '100MB = 40 min talk',
   FACEBOOK_SIGN_UP: 'Sign up with Facebook',
+  FACEBOOK_MESSAGE: "Can't sign in? Message us!",
   GOOGLE_SIGN_UP: 'Sign up with Google',
 };
 const STRINGS = {
@@ -26,6 +29,7 @@ const STRINGS = {
     DISPLAY_SUBTITLE: 'ভারতে ফিরে বাংলাদেশে প্রিয়জনকে বিনামূল্যে কল করুন',
     /* DATA_CONSUMPTION_COPY: '100MB = 40 min talk', */
     FACEBOOK_SIGN_UP: 'ফেসবুক দিয়ে সাইন আপ',
+    FACEBOOK_MESSAGE: 'সাইন ইন করতে পারবেন না? আমাদের বার্তা!',
   },
 };
 
@@ -56,6 +60,15 @@ const GoogleButton = withStyles(() => ({
     width: '100%',
     color: 'grey',
     fontWeight: 'bold',
+  },
+}))(Button);
+
+const SupportButton = withStyles((theme: any) => ({
+  root: {
+    color: 'grey',
+    fontWeight: 'bold',
+    padding: '8px',
+    marginTop: '16px',
   },
 }))(Button);
 
@@ -112,6 +125,15 @@ export default function Login({ locale }: SceneProps) {
         >
           {STRINGS[locale].FACEBOOK_SIGN_UP}
         </FacebookButton>
+        <SupportButton className="sign-up-button" disableElevation>
+          <a
+            href="https://m.me/callhomesg"
+            style={{ color: 'grey', display: 'flex' }}
+          >
+            <FeedbackIcon />
+            {STRINGS[locale].FACEBOOK_MESSAGE}
+          </a>
+        </SupportButton>
       </div>
     </Container>
   );
