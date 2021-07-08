@@ -1,16 +1,5 @@
 version: "3.8"
 services:
-  server:
-    build:
-      context: ./
-    env_file:
-      - ./backend/.env
-    ports:
-      - 4000:4000
-    depends_on:
-      - db
-    environment:
-      DATABASE_URL: 'postgresql://postgres:password@db:5432/callhome'
   db:
     image: postgres
     restart: always
@@ -22,6 +11,21 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
+
+  shared:
+    image: call-home-shared
+    build:
+      context: ./shared/
+
+  backend:
+    build: backend/
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - shared
+      - db
+    environment:
+      DATABASE_URL: "postgresql://postgres:password@db:5432/callhome"
 
 volumes:
   db-data:
